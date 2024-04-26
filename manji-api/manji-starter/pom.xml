@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>manji-starter</artifactId>
+    <version>1.0.0</version>
+    <name>manji-starter</name>
+    <description>项目中的自动装配配置，可插拔功能实现。</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>com.manji</groupId>
+        <artifactId>manji-api</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modules>
+        <module>manji-security-spring-boot-starter</module>
+    </modules>
+
+</project>
