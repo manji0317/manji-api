@@ -3,6 +3,7 @@ import { Message } from '@/plugins/vuetify-global';
 import i18n from './i18n';
 import { getAccessToken, setAccessToken } from '@/utils/TokenUtil';
 import { refreshToken } from '@/api/auth.api';
+import nProgress from 'nprogress';
 
 const { t } = i18n.global;
 // 是否正在刷新Token标识
@@ -19,6 +20,7 @@ const httpApi = axios.create({
 // 添加请求拦截器
 httpApi.interceptors.request.use(
   (config) => {
+    nProgress.start();
     // 请求添加token
     config.headers.Authorization = `Bearer ${getAccessToken()}`;
     return config;
@@ -31,8 +33,12 @@ httpApi.interceptors.request.use(
 
 // 添加相应拦截器
 httpApi.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    nProgress.done();
+    return response;
+  },
   async (error) => {
+    nProgress.done();
     const { response, config } = error;
     // 如果不是401或403，则直接返回错误给业务代码处理
     if (!response && ![401, 403].includes(response.status)) {
