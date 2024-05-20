@@ -6,11 +6,12 @@
  */
 
 import { RouteRecordRaw } from 'vue-router';
-import HelloWorld from '@/components/HelloWorld.vue';
+import Login from "@/components/Login.vue";
 
 export const RouterWhite: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: HelloWorld,
+    component: Login,
+    name: 'login',
   },
 ];

@@ -12,12 +12,16 @@ import { type Router } from 'vue-router';
  *
  */
 export const setBeforeEachGuard = (router: Router) => {
-  router.beforeEach((to, from, next) => {});
+  router.beforeEach((to, from, next) => {
+    next();
+  });
 };
 
 /**
  * 后置路由守卫
  */
 export const setAfterEachGuard = (router: Router) => {
-  router.afterEach((to, from, failure) => {});
+  router.afterEach((to, from, failure) => {
+    console.log('路由守卫', to, from, failure);
+  });
 };

@@ -1,4 +1,11 @@
-.DS_Store
+## ide
+**/.idea
+*.iml
+rebel.xml
 
-.idea
-.vscode
+## backend
+**/target
+**/logs
+
+## front
+**/*.lock

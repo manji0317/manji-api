@@ -13,7 +13,8 @@
     <name>manji-module-service</name>
 
     <modules>
-        <module>manji-user-api</module>
+        <module>manji-system-start</module>
+        <module>manji-system-user</module>
     </modules>
 
 </project>
