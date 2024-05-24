@@ -26,7 +26,7 @@ public class SysUserDetails implements UserDetails , CredentialsContainer  {
     private final boolean credentialsNonExpired;
     private final boolean enabled;
     // 扩展字段
-    private final Integer userId;
+    private final String userId;
     private final String email;
     private final String phone;
     private final List<String> roleList;

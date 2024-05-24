@@ -22,8 +22,11 @@ security:
       expiration: 604800 # 7 day
 
 mybatis-plus:
-  mapper-locations: classpath*:com/manji/base/**/xml/*Mapper.xml
+  mapper-locations:
+    - classpath*:com/manji/base/**/xml/*Mapper.xml
+    - classpath*:com/manji/user/**/xml/*Mapper.xml
 
 logging:
   level:
     com.manji.base.mapper: debug
+    com.manji.user.mapper: debug

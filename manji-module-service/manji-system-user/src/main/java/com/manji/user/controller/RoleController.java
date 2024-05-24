@@ -1,13 +1,11 @@
 package com.manji.user.controller;
 
 import com.manji.base.entity.BaseCondition;
+import com.manji.user.dto.RoleDTO;
 import com.manji.user.service.SysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 角色处理控制层
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024/5/24 2:40
  */
 @RestController
-@RequestMapping("/api/v1/role")
+@RequestMapping("/api/v1")
 public class RoleController {
 
     @Resource
@@ -25,9 +23,40 @@ public class RoleController {
     /**
      * 查询角色列表数据
      */
-    @GetMapping("/getRoleList")
+    @GetMapping("/role/getRoleList")
     public ResponseEntity<?> getRoleList(@ModelAttribute BaseCondition condition) {
         return service.getRoleList(condition);
+    }
+
+    /**
+     * 根据ID获取角色信息
+     */
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<?> getRoleById(@PathVariable("roleId") String roleId) {
+        return service.getRoleById(roleId);
+    }
+    /**
+     * 新增角色
+     */
+    @PostMapping("/role")
+    public ResponseEntity<?> createRole(@RequestBody RoleDTO roleDTO) {
+        return service.createRole(roleDTO);
+    }
+
+    /**
+     * 修改角色信息
+     */
+    @PatchMapping("/role/{roleId}")
+    public ResponseEntity<?> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody RoleDTO roleDTO) {
+        return service.updateRole(roleId, roleDTO);
+    }
+
+    /**
+     * 删除角色信息
+     */
+    @DeleteMapping("/role/{roleId}")
+    public ResponseEntity<?> deleteRole(@PathVariable("roleId") Integer roleId) {
+        return service.deleteRole(roleId);
     }
 
 }

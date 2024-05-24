@@ -1,7 +1,10 @@
 package com.manji.user.mapper;
 
+import com.manji.user.dto.RoleDTO;
 import com.manji.user.entity.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
+    RoleDTO getRoleById(@Param("roleId") String roleId);
 }

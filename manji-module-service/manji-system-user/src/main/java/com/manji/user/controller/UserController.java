@@ -23,7 +23,7 @@ public class UserController {
     /**
      * 获取用户信息数据
      *
-     * @param userId 用户ID
+     * @param username 用户ID
      */
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserInfo(@PathVariable("username") String username) {

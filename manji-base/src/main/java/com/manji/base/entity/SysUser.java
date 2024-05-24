@@ -22,8 +22,6 @@ import java.time.LocalDate;
 @TableName("sys_user")
 public class SysUser extends BaseEntity<SysUser> {
 
-    private Integer id;
-
     /**
      * 登录账号
      */

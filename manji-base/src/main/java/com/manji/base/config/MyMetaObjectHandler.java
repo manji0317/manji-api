@@ -21,7 +21,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         LocalDateTime now = LocalDateTime.now();
         SysUserDetails sysUserDetails = (SysUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer userId = sysUserDetails.getUserId();
+        String userId = sysUserDetails.getUserId();
         this.setFieldValByName("createTime", now, metaObject);
         this.setFieldValByName("createBy", userId, metaObject);
         this.setFieldValByName("updateTime", now, metaObject);
@@ -36,7 +36,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         LocalDateTime now = LocalDateTime.now();
         this.setFieldValByName("updateTime", now, metaObject);
         SysUserDetails sysUserDetails = (SysUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer userId = sysUserDetails.getUserId();
+        String userId = sysUserDetails.getUserId();
         this.setFieldValByName("updateBy", userId, metaObject);
     }
 }
