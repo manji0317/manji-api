@@ -3,8 +3,8 @@ package com.manji.user.controller;
 import com.manji.base.basic.entity.TokenEntity;
 import com.manji.base.entity.SysUserDetails;
 import com.manji.base.service.JwtService;
-import com.manji.base.service.SysUserServiceImpl;
-import com.manji.user.dto.CheckLoginDTO;
+import com.manji.base.service.UserDetailServiceImpl;
+import com.manji.base.dto.CheckLoginDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class LoginController {
     @Resource
     private AuthenticationManager authenticationManager;
     @Resource
-    private SysUserServiceImpl userService;
+    private UserDetailServiceImpl userService;
 
     @GetMapping("/captcha")
     public ResponseEntity<?> captcha() {

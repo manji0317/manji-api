@@ -33,9 +33,8 @@
         </dependency>
         <!--代码生成模板-->
         <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
-            <optional>true</optional>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
         <!--Spring 鉴权-->
         <dependency>

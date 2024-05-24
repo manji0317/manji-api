@@ -2,6 +2,7 @@ package com.manji.base.basic;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class CodeGenerator {
                 .globalConfig((global) -> global.author(AUTHOR))
 
                 .packageConfig(pck -> pck.parent("com.manji")
-                        .moduleName("base")
+                        .moduleName("user")
                         .pathInfo(generatorPathInfo()))
 
                 .strategyConfig(strategy -> strategy.entityBuilder()
@@ -45,15 +46,16 @@ public class CodeGenerator {
                         .mapperBuilder()
                         .enableFileOverride()
                 )
+                .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
     }
 
 
     private static Map<OutputFile, String> generatorPathInfo() {
         Map<OutputFile, String> pathInfo = new HashMap<>();
-        pathInfo.put(OutputFile.xml, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\base\\mapper\\xml");
-        pathInfo.put(OutputFile.entity, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\base\\entity");
-        pathInfo.put(OutputFile.mapper, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\base\\mapper");
+        pathInfo.put(OutputFile.xml, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\user\\mapper\\xml");
+        pathInfo.put(OutputFile.entity, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\user\\entity");
+        pathInfo.put(OutputFile.mapper, "D:\\develop\\work\\manji-boot\\manji-api\\manji-base\\src\\main\\java\\com\\manji\\user\\mapper");
         return pathInfo;
     }
 }

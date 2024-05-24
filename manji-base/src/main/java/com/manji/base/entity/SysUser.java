@@ -1,4 +1,4 @@
-package com.manji.user.entity;
+package com.manji.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.manji.base.basic.entity.BaseEntity;
@@ -28,6 +28,11 @@ public class SysUser extends BaseEntity<SysUser> {
      * 登录账号
      */
     private String username;
+
+    /**
+     * 昵称、姓名
+     */
+    private String nickname;
 
     /**
      * 用户密码

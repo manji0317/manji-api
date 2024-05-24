@@ -1,6 +1,6 @@
 package com.manji.base.config;
 
-import com.manji.base.service.SysUserServiceImpl;
+import com.manji.base.service.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final SysUserServiceImpl userService;
+    private final UserDetailServiceImpl userService;
     
     /**
      * @return 用户详细信息  -> jwt身份验证过滤器

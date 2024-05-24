@@ -2,7 +2,7 @@ package com.manji.base.filter;
 
 import com.manji.base.basic.Const;
 import com.manji.base.service.JwtService;
-import com.manji.base.service.SysUserServiceImpl;
+import com.manji.base.service.UserDetailServiceImpl;
 import com.manji.base.utils.ResponseUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,11 +35,11 @@ import java.util.stream.Collectors;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final SysUserServiceImpl userService;
+    private final UserDetailServiceImpl userService;
     private final JwtService jwtService;
     private final RequestMatcher whitelistMatcher;
 
-    public JwtAuthenticationFilter(SysUserServiceImpl userService, JwtService jwtService, @Value("${security.whitelist-paths}") List<String> whitelistPaths) {
+    public JwtAuthenticationFilter(UserDetailServiceImpl userService, JwtService jwtService, @Value("${security.whitelist-paths}") List<String> whitelistPaths) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.whitelistMatcher = new OrRequestMatcher(

@@ -70,6 +70,7 @@ public class SecurityConfiguration {
         configuration.addAllowedMethod("GET");
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("PATCH");
         configuration.addAllowedMethod("DELETE");
         // 允许的请求头，根据实际情况添加
         configuration.addAllowedHeader("Authorization");

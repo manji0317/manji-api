@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@MapperScan("com.manji.base.mapper")
+@MapperScan({"com.manji.base.mapper", "com.manji.user.mapper"})
 @SpringBootApplication(scanBasePackageClasses = {UserModuleScan.class, BaseModuleScan.class})
 @EnableTransactionManagement
 public class ManjiSystemApplication extends SpringBootServletInitializer {

@@ -1,4 +1,4 @@
-package com.manji.user.dto;
+package com.manji.base.dto;
 
 import lombok.Getter;
 import lombok.Setter;
