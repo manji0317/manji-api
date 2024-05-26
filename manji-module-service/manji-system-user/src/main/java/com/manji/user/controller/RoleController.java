@@ -35,6 +35,7 @@ public class RoleController {
     public ResponseEntity<?> getRoleById(@PathVariable("roleId") String roleId) {
         return service.getRoleById(roleId);
     }
+
     /**
      * 新增角色
      */
@@ -47,7 +48,7 @@ public class RoleController {
      * 修改角色信息
      */
     @PatchMapping("/role/{roleId}")
-    public ResponseEntity<?> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody RoleDTO roleDTO) {
+    public ResponseEntity<?> updateRole(@PathVariable("roleId") String roleId, @RequestBody RoleDTO roleDTO) {
         return service.updateRole(roleId, roleDTO);
     }
 
@@ -55,7 +56,7 @@ public class RoleController {
      * 删除角色信息
      */
     @DeleteMapping("/role/{roleId}")
-    public ResponseEntity<?> deleteRole(@PathVariable("roleId") Integer roleId) {
+    public ResponseEntity<?> deleteRole(@PathVariable("roleId") String roleId) {
         return service.deleteRole(roleId);
     }
 

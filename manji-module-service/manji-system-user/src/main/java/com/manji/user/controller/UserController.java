@@ -39,7 +39,7 @@ public class UserController {
     }
 
     /**
-     * 查询用户列表
+     * 根据ID删除用户
      */
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUserById(@PathVariable("userId") Integer userId) {
