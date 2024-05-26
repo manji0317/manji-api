@@ -21,11 +21,19 @@ public class RoleController {
     private SysRoleService service;
 
     /**
+     * 查询角色列表数据（分页查询）
+     */
+    @GetMapping("/role/getRolePageList")
+    public ResponseEntity<?> getRolePageList(@ModelAttribute BaseCondition condition) {
+        return service.getRolePageList(condition);
+    }
+
+    /**
      * 查询角色列表数据
      */
     @GetMapping("/role/getRoleList")
-    public ResponseEntity<?> getRoleList(@ModelAttribute BaseCondition condition) {
-        return service.getRoleList(condition);
+    public ResponseEntity<?> getRoleList() {
+        return service.getRoleList();
     }
 
     /**

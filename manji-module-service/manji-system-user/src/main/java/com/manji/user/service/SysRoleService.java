@@ -35,13 +35,21 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
     private SysRoleMenuService sysRoleMenuService;
 
     /**
-     * 查询全部角色数据
+     * 查询全部角色数据（分页查询）
      */
-    public ResponseEntity<?> getRoleList(BaseCondition condition) {
+    public ResponseEntity<?> getRolePageList(BaseCondition condition) {
         Page<SysRole> page = new Page<>(condition.getPage(), condition.getItemPrePage());
         Page<SysRole> sysRolePage = this.baseMapper.selectPage(page, new LambdaQueryWrapper<SysRole>()
                 .orderByDesc(BaseEntity::getCreateTime));
         return ResponseEntity.ok(sysRolePage);
+    }
+
+    /**
+     * 查询全部角色数据
+     */
+    public ResponseEntity<?> getRoleList() {
+        List<SysRole> sysRoles = this.baseMapper.selectList(null);
+        return ResponseEntity.ok(sysRoles);
     }
 
 
