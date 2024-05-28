@@ -15,6 +15,7 @@
     <modules>
         <module>manji-system-start</module>
         <module>manji-system-user</module>
+        <module>manji-system-websocket</module>
     </modules>
 
 </project>

@@ -4,20 +4,26 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.manji.base.basic.entity.BaseEntity;
 import com.manji.base.entity.BaseCondition;
+import com.manji.base.entity.SysUserDetails;
 import com.manji.user.dto.RoleDTO;
 import com.manji.user.entity.SysRole;
 import com.manji.user.entity.SysRoleMenu;
 import com.manji.user.mapper.SysRoleMapper;
+import com.manji.websocket.utils.WebsocketUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -72,8 +78,9 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
 
     /**
      * 新增或修改菜单与角色绑定
+     *
      * @param roleId 角色ID
-     * @param menus 菜单集合
+     * @param menus  菜单集合
      */
     private void saveOrUpdateMenus(String roleId, List<String> menus) {
         List<SysRoleMenu> sysRoleMenus = new ArrayList<>();
@@ -101,6 +108,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
                 .remove(new LambdaQueryWrapper<SysRoleMenu>()
                         .eq(SysRoleMenu::getRoleId, roleId));
         this.saveOrUpdateMenus(roleDTO.getId(), roleDTO.getMenus());
+
         return ResponseEntity.ok().build();
     }
 
@@ -132,5 +140,20 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
         log.info("根据角色ID获取角色信息, ID:{}", roleId);
         RoleDTO role = this.baseMapper.getRoleById(roleId);
         return ResponseEntity.ok(role);
+    }
+
+    /**
+     * 根据角色ID集合查询菜单信息
+     */
+    public ResponseEntity<?> getMenusByRoleIds(List<String> roleIds) {
+        log.info("根据角色ID集合查询菜单信息, ID集合:{}", roleIds);
+
+        List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.getBaseMapper()
+                .selectList(new LambdaQueryWrapper<SysRoleMenu>()
+                        .in(SysRoleMenu::getRoleId, roleIds)
+                        .select(SysRoleMenu::getMenuId));
+        // 去重菜单ID
+        Set<String> menuIds = sysRoleMenus.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
+        return ResponseEntity.ok(menuIds);
     }
 }

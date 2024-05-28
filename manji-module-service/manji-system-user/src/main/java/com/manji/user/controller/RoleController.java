@@ -7,6 +7,8 @@ import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 角色处理控制层
  *
@@ -42,6 +44,17 @@ public class RoleController {
     @GetMapping("/role/{roleId}")
     public ResponseEntity<?> getRoleById(@PathVariable("roleId") String roleId) {
         return service.getRoleById(roleId);
+    }
+
+    /**
+     * 根据角色ID集合获取所属菜单信息
+     * 为前台新增、修改用户时设置菜单提供API
+     *
+     * @param roleIds 角色ID集合
+     */
+    @GetMapping("/role/getMenusByRoleIds")
+    public ResponseEntity<?> getMenusByRoleIds(@RequestParam List<String> roleIds) {
+        return service.getMenusByRoleIds(roleIds);
     }
 
     /**

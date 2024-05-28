@@ -50,7 +50,7 @@ public class UserController {
      * 根据用户ID更新用户数据
      */
     @PatchMapping("/{userId}")
-    public ResponseEntity<?> updateUserById(@PathVariable("userId") Integer userId, @RequestBody SysUser sysUser) {
+    public ResponseEntity<?> updateUserById(@PathVariable("userId") String userId, @RequestBody SysUser sysUser) {
         return service.updateUserById(userId, sysUser);
     }
 }

@@ -2,10 +2,7 @@ package com.manji.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
@@ -24,6 +21,7 @@ import java.io.Serial;
 @TableName("sys_role_menu")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class SysRoleMenu extends Model<SysRoleMenu> {
 
     @Serial

@@ -17,6 +17,12 @@
 			<artifactId>manji-system-user</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.manji</groupId>
+			<artifactId>manji-system-websocket</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

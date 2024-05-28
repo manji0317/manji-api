@@ -5,7 +5,7 @@
         <id property="id" column="id" />
         <result property="roleName" column="role_name" />
         <result property="description" column="description" />
-        <collection property="menus" ofType="string" >
+        <collection property="menus"  ofType="string" >
             <constructor >
                 <arg column="menu_id" />
             </constructor>

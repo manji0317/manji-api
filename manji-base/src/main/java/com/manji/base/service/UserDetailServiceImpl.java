@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.manji.base.condition.UserListCondition;
+import com.manji.base.dto.UserDTO;
 import com.manji.base.entity.SysUser;
 import com.manji.base.entity.SysUserDetails;
 import com.manji.base.mapper.SysUserMapper;
@@ -68,15 +69,9 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @return 用户信息
      */
     public ResponseEntity<?> getUserInfo(String username) {
-//        UserDTO userDTO = this.baseMapper.getUserInfo(username);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        return ResponseEntity.ok().build();
+        log.info("根据username查询用户信息：username：{}", username);
+        UserDTO userInfo = this.baseMapper.getUserInfo(username);
+        return ResponseEntity.ok(userInfo);
     }
 
     /**
@@ -112,10 +107,11 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param sysUser 用户信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> updateUserById(Integer userId, SysUser sysUser) {
+    public ResponseEntity<?> updateUserById(String userId, SysUser sysUser) {
         log.info("根据用户ID更新用户信息开始，用户ID：{}", userId);
         this.baseMapper.update(sysUser, new LambdaUpdateWrapper<SysUser>()
                 .eq(SysUser::getId, userId));
+
         return ResponseEntity.ok().build();
     }
 }

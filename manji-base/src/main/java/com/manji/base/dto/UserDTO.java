@@ -3,6 +3,7 @@ package com.manji.base.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -11,9 +12,13 @@ import java.util.List;
 public class UserDTO {
     private Integer id;
     private String username;
+    private String nickname;
     private String email;
     private String phone;
+    private Integer gender;
+    private LocalDate birthday;
     private String avatar;
-    private List<MenuDTO> menus;
+    private Integer status;
+    private List<String> menus;
 }
 

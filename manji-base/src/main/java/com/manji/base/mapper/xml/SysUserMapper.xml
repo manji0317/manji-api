@@ -2,10 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.manji.base.mapper.SysUserMapper">
 
-    <select id="getUserInfo" resultType="com.manji.base.dto.UserDTO">
-        
-    </select>
+    <resultMap id="SysUserMap" type="com.manji.base.dto.UserDTO">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
+        <result property="email" column="email" />
+        <result property="phone" column="phone" />
+        <result property="gender" column="gender" />
+        <result property="birthday" column="birthday" />
+        <result property="avatar" column="avatar" />
+        <result property="status" column="status" />
+        <collection property="menus" ofType="string" >
+            <constructor >
+                <arg column="menu_id" />
+            </constructor>
+        </collection>
+    </resultMap>
 
+    <select id="getUserInfo" resultMap="SysUserMap">
+        select su.id,
+               su.username,
+               su.nickname,
+               su.email,
+               su.phone,
+               su.gender,
+               su.birthday,
+               su.avatar,
+               su.status,
+               sum.menu_id
+        from sys_user su
+                 left join sys_user_menu sum on sum.user_id = su.id
+        where su.username = #{username}
+    </select>
 
     <select id="getUserList" resultType="com.manji.base.entity.SysUser">
         select su.id,

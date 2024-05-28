@@ -7,9 +7,10 @@
         <artifactId>manji-module-service</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>manji-system-user</artifactId>
+    <artifactId>manji-system-websocket</artifactId>
     <version>1.0.0</version>
-    <name>manji-system-user</name>
+    <name>manji-system-websocket</name>
+    <description>系统中前后端通讯处理</description>
 
     <dependencies>
         <dependency>
@@ -19,16 +20,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.manji</groupId>
-            <artifactId>manji-system-websocket</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.manji</groupId>
-                    <artifactId>manji-base</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+            <version>2.0.9</version>
         </dependency>
     </dependencies>
-
 </project>
