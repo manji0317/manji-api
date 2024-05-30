@@ -22,12 +22,6 @@
             <groupId>com.manji</groupId>
             <artifactId>manji-system-websocket</artifactId>
             <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.manji</groupId>
-                    <artifactId>manji-base</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

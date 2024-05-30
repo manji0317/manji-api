@@ -25,7 +25,7 @@ public class WebsocketUtil {
     /**
      * 类型 菜单的通知
      */
-    public static final String MenuNotifications = "MenuNotifications";
+    public static final String MENU_NOTIFICATIONS = "MenuNotifications";
 
     public static void addUser(String username, SocketIOClient client) {
         USER_CLIENT_ID_MAP.put(username, client);

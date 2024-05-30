@@ -39,8 +39,6 @@ public class WebsocketRunner implements InitializingBean, DisposableBean {
         configuration.setWorkerThreads(WebsocketConfig.WORKER_THREADS);
         configuration.setBossThreads(WebsocketConfig.BOSS_THREADS);
         socketIOServer = new SocketIOServer(configuration);
-
-
         socketIOServer.addConnectListener(socketIOClient -> {
             HandshakeData handshakeData = socketIOClient.getHandshakeData();
             String username = getUsername(handshakeData);
@@ -59,7 +57,6 @@ public class WebsocketRunner implements InitializingBean, DisposableBean {
                 socketIOClient.disconnect();
             }
         });
-
         socketIOServer.addDisconnectListener((socketIOClient) -> {
             String username = socketIOClient.get(WebsocketConfig.USERNAME);
             if (username != null && username.isBlank()) {
@@ -67,8 +64,6 @@ public class WebsocketRunner implements InitializingBean, DisposableBean {
             }
             log.info("有链接断开：username:{} | clinic id: {}", username, socketIOClient.getSessionId());
         });
-
-
         socketIOServer.start();
     }
 
@@ -79,16 +74,15 @@ public class WebsocketRunner implements InitializingBean, DisposableBean {
         }
     }
 
-
+    /**
+     * 获取web socket中的username参数
+     */
     private String getUsername(HandshakeData handshakeData) {
         Map<String, List<String>> urlParams = handshakeData.getUrlParams();
-
         List<String> usernames = urlParams.get(WebsocketConfig.USERNAME);
-
         if (usernames != null && !usernames.isEmpty()) {
             return usernames.get(0);
         }
-
         return null;
     }
 }

@@ -4,7 +4,6 @@ import com.manji.base.filter.JwtAuthenticationFilter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,8 +29,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
     @Resource
-    private LogoutHandler logoutHandler;
-    @Resource
     private JwtAuthenticationFilter jwtAuthentication;
     @Resource
     private AuthenticationProvider authenticationProvider;
@@ -54,7 +51,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthentication, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
-                        .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();
     }
