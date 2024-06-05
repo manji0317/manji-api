@@ -11,6 +11,7 @@
         <result property="gender" column="gender" />
         <result property="birthday" column="birthday" />
         <result property="avatar" column="avatar" />
+        <result property="backgroundImg" column="background_img" />
         <result property="status" column="status" />
         <collection property="menus" ofType="string" >
             <constructor >
@@ -28,11 +29,12 @@
                su.gender,
                su.birthday,
                su.avatar,
+               su.background_img,
                su.status,
                sum.menu_id
         from sys_user su
                  left join sys_user_menu sum on sum.user_id = su.id
-        where su.username = #{username}
+        where su.id = #{userId}
     </select>
 
     <select id="getUserList" resultType="com.manji.base.entity.SysUser">
@@ -44,6 +46,7 @@
                su.gender,
                su.birthday,
                su.avatar,
+               su.background_img,
                su.status,
                su.create_time,
                su.create_by
@@ -52,11 +55,11 @@
             su.del_flag = 0
             <if test="condition.search != null and condition.search != ''">
                 and (
-                su.username like concat('%',#{condition.search},'%')
-                or su.email like concat('%',#{condition.search},'%')
-                or su.phone like concat('%',#{condition.search},'%')
-                or su.nickname like concat('%',#{condition.search},'%')
-                )
+                    su.username like concat('%', #{condition.search}, '%')
+                        or su.email like concat('%', #{condition.search}, '%')
+                        or su.phone like concat('%', #{condition.search}, '%')
+                        or su.nickname like concat('%', #{condition.search}, '%')
+                    )
             </if>
         </where>
         <choose>

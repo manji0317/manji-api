@@ -13,14 +13,27 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+
+		<dependency>
 			<groupId>com.manji</groupId>
-			<artifactId>manji-system-user</artifactId>
+			<artifactId>manji-user</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.manji</groupId>
-			<artifactId>manji-system-websocket</artifactId>
+			<artifactId>manji-websocket</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.manji</groupId>
+			<artifactId>manji-file</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>

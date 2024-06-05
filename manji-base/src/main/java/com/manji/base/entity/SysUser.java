@@ -63,6 +63,11 @@ public class SysUser extends BaseEntity<SysUser> {
     private String avatar;
 
     /**
+     * 用户首页背景图片地址
+     */
+    private String backgroundImg;
+
+    /**
      * 用户状态
      */
     private Integer status;

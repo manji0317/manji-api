@@ -6,14 +6,19 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/manji?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     password: 123456
     username: root
+  # 文件上传限制
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
-
+# 系统认证配置信息
 security:
   cors:
     # 允许的跨域源 集合
     allowed-origins: http://localhost:3000,http://192.168.31.221:3000
   #请求白名单
-  whitelist-paths: /api/v1/auth/**
+  whitelist-paths: /api/v1/auth/**,/static/**
   jwt:
     private-key: MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCS0QSZ+vYGjcHhypycN+BSL9m9IcbYmuKR3XwGZ5JY98fFgr/tlWoOu4nz9P4a/dTrXmIpL4qbkGnUAzK0Ev/zqvhiff7Dw+MbQqLr6Mz1Ooc/LzQ+NvHRH1ID9C/xu5C2+DoG2ba5o7Ln7Ba0kUPrkAUBcR7FCRuF+E+azuevo9wPed3R2L9esqhcPx/wm/fUTjF3AAuXAgOQIXdbm8nlcOfWsfzt110p7Kh7jCYzi90F5+qDPHeaE7Xz6yvtIm9DalpBDx6Olt5MDGAlao8I2/drl0RciVWMUBEu2HRttqhN5NGpzgkkJypCFAVCCYohTyVEBoAVcpBy6eyt01lxAgMBAAECggEAFUcJna9LXKPKx4hvrgxDDGY27jwo71dzIqSwxtTX1uECKNPMMQiIeF4hniOReCP1aa8iFsn3EpiZXcqg3IwsYAoVOWD9PS30igzcQ8hXe+rhkvyqW6Hm5eHeJwiKskP2sy3Cax++ZaUd1pLWr5CmAUu8Dftw9ClfvcjA8LSvyzqCAwhHTwrmfV+kIY1dRhWjxnWEHVwYCDgLF8qYasCasS0c+7BvSTxWR/gpBKV+Bcq7fTfX6dyxsjMV6bm9bA9G8qU0bvukwGueBiMk4UfkDZiZpDjZkzt07v65IEuoBjwryhg9WDEGB6F+R9HW6bY2uZbyWt0YjZNTsP8wseb8qQKBgQDGICR/rjLEt/cTf7A+FNxUf6OoDCGRZWGh29Dm4HKgH4hUh9mkZAvzc6+UNqrBHXCCGatpuMVHML89VbW4yFO0aG71hz8OT3fBx6T/U3IbYNwu1gA0fpN2leMd9a+M71FR81Dc6hmfez1Vjo9Wze4cvhKp1IOYCqcJT5gQxJStBwKBgQC9s/mcQeJQB/nNbkemajKfm8mSPATf9cnoa4zFmJ6xg7eSC+jQmJMzsJEJyh9ea9ng70Xn+Z31oTWiQ/q3EiMeoz0vB8JFSdbB6F49m6qTUB1YOM3xn53/4xUiQX5/nqBdI4n/oFJMNZ8C+J9mLXW1TbyQhJp6pgw8JVgsogsfxwKBgG//RYKjv3EyqUnteXxuoGpnyOS7DtK5I6qyrvGEWWeoy5E1RlPGdncFo3A+QuJtuObiieJ2n5ZxuPl8FQDCxYaLLoY/EOcPBxyUtfHbgvp1E6KqOG10S/nSGxQZiUY7FpYj3Ec1UoyzxuUxdFfWi07WJ4i3aDgvdWMvCkAYUA9LAoGASVoXEWmUVbfPyrRythFoQ7kcZxQYGnVSvjEf/KO38RHqYGmEe2wTty/11SA3ou33EHfUww8NGhZcw8KfZjx4Ifeix9WrM9mKVe5AynevrEiVIDDOyTgcAv7OhDFo9XXjsj/0s0hNqjQtqRtznzHCyvklCYiMpxIftv4FqzR5Mq8CgYAGY/hQlwTlSb8W5/EJnQJX2o/hJS3BpB5/AAPbs4xzFpmyBjlYmsSKdeNQxHsvRlQPb2HkuewvTsWVLOINcu1aFptBDVW1VQqZtSsS9ESsGRGOOO5Jfchlp/FONLC/jBPGFR6NLjzcT0025IQnIrXHohE1pwuqj95cM5m6CvCJ7g==
     public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAktEEmfr2Bo3B4cqcnDfgUi/ZvSHG2Jrikd18BmeSWPfHxYK/7ZVqDruJ8/T+Gv3U615iKS+Km5Bp1AMytBL/86r4Yn3+w8PjG0Ki6+jM9TqHPy80Pjbx0R9SA/Qv8buQtvg6Btm2uaOy5+wWtJFD65AFAXEexQkbhfhPms7nr6PcD3nd0di/XrKoXD8f8Jv31E4xdwALlwIDkCF3W5vJ5XDn1rH87dddKeyoe4wmM4vdBefqgzx3mhO18+sr7SJvQ2paQQ8ejpbeTAxgJWqPCNv3a5dEXIlVjFARLth0bbaoTeTRqc4JJCcqQhQFQgmKIU8lRAaAFXKQcunsrdNZcQIDAQAB
@@ -21,13 +26,29 @@ security:
     refresh-token:
       expiration: 604800 # 7 day
 
+# Mybatis plus 配置
 mybatis-plus:
   mapper-locations:
     - classpath*:com/manji/base/**/xml/*Mapper.xml
     - classpath*:com/manji/user/**/xml/*Mapper.xml
 
+# 输出日志配置
 logging:
   level:
     com.manji.base.mapper: debug
     com.manji.user.mapper: debug
-    io.netty: debug
+
+# 文件上传篇日志（自定义配置）
+file-upload:
+  oss:
+    # true 开始阿里云oss对象存储 false 开启本地文件上传
+    enable: true
+    # 只有当开启本地文件上传时，此配置才生效
+    local-url: http://127.0.0.1:8080/static/
+    local-path: D:/home/manji/file/
+    # 只有当开启阿里云oss对象存储时，此配置才生效
+    region:
+    endpoint:
+    access-key-id:
+    access-key-secret:
+    bucket-name:

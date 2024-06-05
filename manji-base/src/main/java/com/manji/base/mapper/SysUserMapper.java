@@ -21,7 +21,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     /**
      * 根据查询条件，查询数据库中符合条件的用户信息
      */
-    UserDTO getUserInfo(@Param("username") String username);
+    UserDTO getUserInfo(@Param("userId") String userId);
 
     Page<SysUser> getUserList(@Param("condition") UserListCondition condition, @Param("page") IPage<SysUser> page);
 }

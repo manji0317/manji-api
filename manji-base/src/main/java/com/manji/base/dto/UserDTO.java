@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserDTO {
-    private Integer id;
+    private String id;
     private String username;
     private String nickname;
     private String email;
@@ -18,6 +18,7 @@ public class UserDTO {
     private Integer gender;
     private LocalDate birthday;
     private String avatar;
+    private String backgroundImg;
     private Integer status;
     private List<String> menus;
 }

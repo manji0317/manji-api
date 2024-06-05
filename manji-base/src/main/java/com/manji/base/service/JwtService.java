@@ -50,7 +50,7 @@ public class JwtService {
 
         return JWT.create()
                 .withClaim(Const.TOKEN_LOGIN_NAME, sysUserDetails.getUsername())
-                .withSubject(sysUserDetails.getUsername())
+                .withSubject(sysUserDetails.getUserId())
                 .withExpiresAt(Instant.now().plusSeconds(expiresAt))
                 .sign(Algorithm.RSA256(rsaPublicKey, rsaPrivateKey));
     }
