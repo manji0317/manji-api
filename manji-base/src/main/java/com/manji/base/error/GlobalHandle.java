@@ -3,6 +3,7 @@ package com.manji.base.error;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -49,6 +50,16 @@ public class GlobalHandle {
     @ExceptionHandler(value = {DisabledException.class})
     public ResponseEntity<?> loginAccountExceptionHandler(Exception e) {
         log.error("登录账号异常: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    /**
+     * 拒绝访问处理
+     * 标识该用户没有权限访问某个接口
+     */
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    public ResponseEntity<?> accessDeniedExceptionHandler(Exception e) {
+        log.error("无权访问: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 

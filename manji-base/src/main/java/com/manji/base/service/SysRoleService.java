@@ -1,15 +1,17 @@
-package com.manji.user.service;
+package com.manji.base.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.manji.base.basic.entity.BaseEntity;
-import com.manji.base.entity.BaseCondition;
-import com.manji.user.dto.RoleDTO;
-import com.manji.user.entity.SysRole;
-import com.manji.user.entity.SysRoleMenu;
-import com.manji.user.mapper.SysRoleMapper;
+import com.manji.base.condition.BaseCondition;
+import com.manji.base.dto.RoleDTO;
+import com.manji.base.entity.SysRole;
+import com.manji.base.entity.SysRolePermission;
+import com.manji.base.entity.SysUserRole;
+import com.manji.base.mapper.SysRoleMapper;
+import com.manji.base.mapper.SysUserRoleMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +37,9 @@ import java.util.stream.Collectors;
 public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
 
     @Resource
-    private SysRoleMenuService sysRoleMenuService;
+    private SysRolePermissionService sysRolePermissionService;
+    @Resource
+    private SysUserRoleMapper sysUserRoleMapper;
 
     /**
      * 查询全部角色数据（分页查询）
@@ -54,7 +59,6 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
         return ResponseEntity.ok(sysRoles);
     }
 
-
     /**
      * 创建角色信息
      */
@@ -68,20 +72,38 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
                 .build();
         this.baseMapper.insert(role);
         log.info("角色信息存储完成，开始处理菜单数据");
-        this.saveOrUpdateMenus(role.getId(), roleDTO.getMenus());
+        Map<String, List<String>> permissions = roleDTO.getPermissions();
+        this.saveOrUpdateMenus(permissions, role.getId());
         return ResponseEntity.ok().build();
     }
 
     /**
      * 新增或修改菜单与角色绑定
      *
-     * @param roleId 角色ID
-     * @param menus  菜单集合
+     * @param roleId      角色ID
+     * @param permissions 菜单、权限集合
      */
-    private void saveOrUpdateMenus(String roleId, List<String> menus) {
-        List<SysRoleMenu> sysRoleMenus = new ArrayList<>();
-        menus.forEach(menu -> sysRoleMenus.add(new SysRoleMenu(roleId, menu)));
-        sysRoleMenuService.saveBatch(sysRoleMenus);
+    private void saveOrUpdateMenus(Map<String, List<String>> permissions, String roleId) {
+        if (permissions.isEmpty()) {
+            log.info("角色没有配置菜单和权限信息，跳过处理");
+            return;
+        }
+        List<SysRolePermission> roleMenus = new ArrayList<>();
+        permissions.forEach((menuId, permissionsList) -> {
+            if (permissionsList.isEmpty()) {
+                roleMenus.add(SysRolePermission.builder()
+                        .roleId(roleId)
+                        .menuId(menuId)
+                        .build());
+            } else {
+                permissionsList.forEach(permissionId -> roleMenus.add(SysRolePermission.builder()
+                        .roleId(roleId)
+                        .menuId(menuId)
+                        .permissionId(permissionId)
+                        .build()));
+            }
+        });
+        sysRolePermissionService.saveBatch(roleMenus);
     }
 
     /**
@@ -100,10 +122,11 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
                 new LambdaUpdateWrapper<SysRole>()
                         .eq(BaseEntity::getId, roleId));
         log.info("角色信息修改完毕，开始更新绑定的菜单信息");
-        sysRoleMenuService
-                .remove(new LambdaQueryWrapper<SysRoleMenu>()
-                        .eq(SysRoleMenu::getRoleId, roleId));
-        this.saveOrUpdateMenus(roleDTO.getId(), roleDTO.getMenus());
+        sysRolePermissionService
+                .remove(new LambdaQueryWrapper<SysRolePermission>()
+                        .eq(SysRolePermission::getRoleId, roleId));
+
+        this.saveOrUpdateMenus(roleDTO.getPermissions(), roleId);
 
         return ResponseEntity.ok().build();
     }
@@ -120,36 +143,38 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
         this.baseMapper.deleteById(roleId);
 
         log.info("角色信息删除成功，开始删除绑定的菜单信息");
-        sysRoleMenuService.remove(new LambdaUpdateWrapper<SysRoleMenu>()
-                .eq(SysRoleMenu::getRoleId, roleId));
+        sysRolePermissionService.remove(new LambdaUpdateWrapper<SysRolePermission>()
+                .eq(SysRolePermission::getRoleId, roleId));
+
+        log.info("开始删除角色与用户的绑定信息");
+        sysUserRoleMapper.delete(new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getRoleId, roleId));
 
         return ResponseEntity.ok().build();
     }
-
 
     /**
      * 根据角色ID获取角色信息
      *
      * @param roleId 角色ID
      */
-    public ResponseEntity<?> getRoleById(String roleId) {
+    public RoleDTO getRoleById(String roleId) {
         log.info("根据角色ID获取角色信息, ID:{}", roleId);
-        RoleDTO role = this.baseMapper.getRoleById(roleId);
-        return ResponseEntity.ok(role);
-    }
-
-    /**
-     * 根据角色ID集合查询菜单信息
-     */
-    public ResponseEntity<?> getMenusByRoleIds(List<String> roleIds) {
-        log.info("根据角色ID集合查询菜单信息, ID集合:{}", roleIds);
-
-        List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.getBaseMapper()
-                .selectList(new LambdaQueryWrapper<SysRoleMenu>()
-                        .in(SysRoleMenu::getRoleId, roleIds)
-                        .select(SysRoleMenu::getMenuId));
-        // 去重菜单ID
-        Set<String> menuIds = sysRoleMenus.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toSet());
-        return ResponseEntity.ok(menuIds);
+        SysRole sysRole = this.baseMapper.selectById(roleId);
+        Optional<SysRole> optionalSysRole = Optional.ofNullable(sysRole);
+        return optionalSysRole.map(role -> {
+            Map<String, List<String>> permissions = sysRolePermissionService.getBaseMapper()
+                    .selectList(new LambdaQueryWrapper<SysRolePermission>()
+                            .eq(SysRolePermission::getRoleId, roleId)
+                            .select(SysRolePermission::getMenuId, SysRolePermission::getPermissionId))
+                    .stream()
+                    .collect(Collectors.groupingBy(SysRolePermission::getMenuId,
+                            Collectors.mapping(SysRolePermission::getPermissionId, Collectors.toList())));
+            RoleDTO roleDTO = new RoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setRoleName(role.getRoleName());
+            roleDTO.setDescription(role.getDescription());
+            roleDTO.setPermissions(permissions);
+            return roleDTO;
+        }).orElse(null);
     }
 }

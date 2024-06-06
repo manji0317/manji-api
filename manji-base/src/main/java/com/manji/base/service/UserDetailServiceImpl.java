@@ -10,9 +10,11 @@ import com.manji.base.basic.entity.BaseEntity;
 import com.manji.base.condition.UserListCondition;
 import com.manji.base.dto.PasswordDTO;
 import com.manji.base.dto.UserDTO;
+import com.manji.base.entity.SysRolePermission;
 import com.manji.base.entity.SysUser;
 import com.manji.base.entity.SysUserDetails;
-import com.manji.base.entity.SysUserMenu;
+import com.manji.base.entity.SysUserRole;
+import com.manji.base.mapper.SysRolePermissionMapper;
 import com.manji.base.mapper.SysUserMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +27,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * <p>
@@ -43,31 +44,39 @@ import java.util.Optional;
 public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements UserDetailsService {
 
     @Resource
-    private SysUserMenuService sysUserMenuService;
+    private SysUserRoleService sysUserRoleService;
+    @Resource
+    private SysRolePermissionMapper sysRolePermissionMapper;
 
     @Override
     public SysUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 1. 数据库查询用户
-        SysUser user = this.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+        SysUser user = this.baseMapper.selectOne(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUsername, username)
+                .select(SysUser::getUsername, BaseEntity::getId, SysUser::getPassword));
+
         if (user == null) {
             log.error("Query returned no results for user '{}'", username);
             throw new UsernameNotFoundException(username);
         } else {
+            // 查询角色、权限数据
+            UserDTO userInfo = this.getUserInfo(user.getId());
             // 2. 设置权限集合
-            List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList("role");
+            List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(userInfo.getRoles());
             // 3. 返回UserDetails类型用户
             return SysUserDetails.builder()
                     .password(user.getPassword())
-                    .username(user.getUsername())
+                    .username(userInfo.getUsername())
                     .authorities(new HashSet<>(authorityList))
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)
-                    .enabled(user.getStatus() == 1)
-                    .userId(user.getId())
-                    .email(user.getEmail())
-                    .phone(user.getPhone())
-                    .roleList(new ArrayList<>())
+                    .enabled(userInfo.getStatus() == 1)
+                    .userId(userInfo.getId())
+                    .email(userInfo.getEmail())
+                    .phone(userInfo.getPhone())
+                    .roles(userInfo.getRoles())
+                    .permissions(userInfo.getPermissions())
                     .build();
         }
     }
@@ -96,19 +105,9 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
             log.error("新增用户失败");
             return ResponseEntity.badRequest().build();
         }
+        log.info("新增用户成功, 用户角色关联数据。userId:{}", sysUser.getId());
 
-        log.info("新增用户成功, 开始存储菜单数据。userId:{}", sysUser.getId());
-        List<String> menus = userDTO.getMenus();
-
-        if (menus.isEmpty()) {
-            log.info("用户未选择菜单数据，跳过处理。");
-            return ResponseEntity.ok().build();
-        }
-
-        log.info("开始存储菜单数据");
-        List<SysUserMenu> sysUserMenus = new ArrayList<>();
-        menus.forEach(menu -> sysUserMenus.add(new SysUserMenu(sysUser.getId(), menu)));
-        sysUserMenuService.saveBatch(sysUserMenus);
+        this.updateUserRole(sysUser.getId(), userDTO.getRoles());
 
         return ResponseEntity.ok().build();
     }
@@ -119,10 +118,46 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param userId 用户ID
      * @return 用户信息
      */
-    public ResponseEntity<?> getUserInfo(String userId) {
-        log.info("根据username查询用户信息：userId：{}", userId);
-        UserDTO userInfo = this.baseMapper.getUserInfo(userId);
-        return ResponseEntity.ok(userInfo);
+    public UserDTO getUserInfo(String userId) {
+        log.info("根据userId查询用户信息：userId：{}", userId);
+        SysUser sysUser = this.baseMapper.selectById(userId);
+
+        return Optional.ofNullable(sysUser)
+                .map(user -> {
+                    UserDTO userInfo = new UserDTO();
+                    userInfo.setId(sysUser.getId());
+                    userInfo.setUsername(sysUser.getUsername());
+                    userInfo.setNickname(sysUser.getNickname());
+                    userInfo.setEmail(sysUser.getEmail());
+                    userInfo.setPhone(sysUser.getPhone());
+                    userInfo.setGender(sysUser.getGender());
+                    userInfo.setBirthday(sysUser.getBirthday());
+                    userInfo.setAvatar(sysUser.getAvatar());
+                    userInfo.setBackgroundImg(sysUser.getBackgroundImg());
+                    userInfo.setStatus(sysUser.getStatus());
+                    userInfo.setRoles(Collections.emptyList());
+                    // 查询用户角色
+                    List<SysUserRole> sysUserRoles = sysUserRoleService.getBaseMapper().selectList(new LambdaQueryWrapper<SysUserRole>()
+                            .eq(SysUserRole::getUserId, userId)
+                            .select(SysUserRole::getRoleId));
+                    if (!sysUserRoles.isEmpty()) {
+                        List<String> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+                        userInfo.setRoles(roleIds);
+
+                        // 查询菜单、权限信息
+                        List<SysRolePermission> sysRolePermissions = sysRolePermissionMapper.selectList(new LambdaQueryWrapper<SysRolePermission>()
+                                .in(SysRolePermission::getRoleId, roleIds));
+                        if (!sysRolePermissions.isEmpty()) {
+                            Map<String, List<String>> permissions = sysRolePermissions.stream()
+                                    .collect(Collectors.groupingBy(SysRolePermission::getMenuId,
+                                            Collectors.mapping(SysRolePermission::getPermissionId, Collectors.toList())));
+                            userInfo.setPermissions(permissions);
+                        }
+                    }
+
+                    return userInfo;
+                })
+                .orElse(null);
     }
 
     /**
@@ -145,6 +180,8 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
     public ResponseEntity<?> deleteUserById(String userId) {
         log.info("根据ID删除用户开始，用户ID：{}", userId);
         this.baseMapper.deleteById(userId);
+        log.info("用户删除成功，开始清理用户与角色关联关系");
+        sysUserRoleService.remove(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
         return ResponseEntity.ok().build();
     }
 
@@ -175,12 +212,28 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
             return ResponseEntity.badRequest().body(10004);
         }
 
-        log.info("更新用户成功，开始处理菜单更新");
-        List<String> menus = userDTO.getMenus();
-        sysUserMenuService.remove(new LambdaQueryWrapper<SysUserMenu>().eq(SysUserMenu::getUserId, userId));
-        menus.forEach(menu -> sysUserMenuService.save(new SysUserMenu(userId, menu)));
-
+        log.info("更新用户成功，开始处理用户与角色关联数据");
+        // 先删除
+        sysUserRoleService.remove(new LambdaUpdateWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
+        this.updateUserRole(userId, userDTO.getRoles());
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 更新用户角色
+     *
+     * @param userId  用户ID
+     * @param roleIds 角色ID列表
+     */
+    private void updateUserRole(String userId, List<String> roleIds) {
+        if (roleIds.isEmpty()) {
+            log.info("用户未选择角色数据跳过处理");
+            return;
+        }
+        List<SysUserRole> sysUserRoles = roleIds.stream()
+                .map(roleId -> new SysUserRole(userId, roleId))
+                .toList();
+        sysUserRoleService.saveBatch(sysUserRoles);
     }
 
     /**

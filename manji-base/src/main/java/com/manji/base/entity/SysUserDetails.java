@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,8 +30,9 @@ public class SysUserDetails implements UserDetails , CredentialsContainer  {
     private final String userId;
     private final String email;
     private final String phone;
-    private final List<String> roleList;
-    
+    private final List<String> roles; // 角色列表
+    private final Map<String, List<String>> permissions; // 权限列表
+
     // 认证成功后擦除密码
     @Override
     public void eraseCredentials() {

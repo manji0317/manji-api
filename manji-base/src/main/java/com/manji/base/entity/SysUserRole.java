@@ -1,15 +1,18 @@
-package com.manji.user.entity;
+package com.manji.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
 
 /**
  * <p>
- * 系统角色菜单关联表
+ * 用户角色关联表
  * </p>
  *
  * @author BaiQingDong
@@ -18,23 +21,22 @@ import java.io.Serial;
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("sys_role_menu")
-@Builder
+@TableName("sys_user_role")
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysRoleMenu extends Model<SysRoleMenu> {
+public class SysUserRole extends Model<SysUserRole> {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
+     * 用户ID
+     */
+    private String userId;
+
+    /**
      * 角色ID
      */
     private String roleId;
-
-    /**
-     * 菜单ID
-     */
-    private String menuId;
 
 }

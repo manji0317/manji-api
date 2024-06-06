@@ -1,7 +1,7 @@
-package com.manji.user.mapper;
+package com.manji.base.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.manji.user.entity.SysRoleMenu;
+import com.manji.base.entity.SysRolePermission;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.manji.user.entity.SysRoleMenu;
  * @author BaiQingDong
  * @since 2024-05-24
  */
-public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu> {
+public interface SysRolePermissionMapper extends BaseMapper<SysRolePermission> {
 
 }

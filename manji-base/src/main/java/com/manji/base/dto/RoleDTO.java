@@ -1,9 +1,10 @@
-package com.manji.user.dto;
+package com.manji.base.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 接受前台对Role操作的实体类
@@ -14,5 +15,5 @@ public class RoleDTO {
     private String id;
     private String roleName;
     private String description;
-    private List<String> menus;
+    private Map<String, List<String>> permissions;
 }

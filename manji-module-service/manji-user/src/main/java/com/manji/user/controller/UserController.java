@@ -3,7 +3,6 @@ package com.manji.user.controller;
 import com.manji.base.condition.UserListCondition;
 import com.manji.base.dto.PasswordDTO;
 import com.manji.base.dto.UserDTO;
-import com.manji.base.dto.UserImgDTO;
 import com.manji.base.service.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,11 @@ public class UserController {
      */
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserInfo(@PathVariable("userId") String userId) {
-        return service.getUserInfo(userId);
+        UserDTO userInfo = service.getUserInfo(userId);
+        if (userInfo == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userInfo);
     }
 
     /**

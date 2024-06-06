@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 @Getter
@@ -12,6 +13,7 @@ import java.util.List;
 public class UserDTO {
     private String id;
     private String username;
+    private String password;
     private String nickname;
     private String email;
     private String phone;
@@ -20,6 +22,7 @@ public class UserDTO {
     private String avatar;
     private String backgroundImg;
     private Integer status;
-    private List<String> menus;
+    private List<String> roles;
+    private Map<String, List<String>> permissions;
 }
 

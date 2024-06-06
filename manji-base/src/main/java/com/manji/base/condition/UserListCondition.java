@@ -1,6 +1,5 @@
 package com.manji.base.condition;
 
-import com.manji.base.entity.BaseCondition;
 import lombok.Getter;
 import lombok.Setter;
 

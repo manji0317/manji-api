@@ -1,9 +1,12 @@
 package com.manji.websocket;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.manji.base.basic.entity.BaseEntity;
 import com.manji.base.dto.UserDTO;
+import com.manji.base.entity.SysUser;
 import com.manji.base.mapper.SysUserMapper;
 import com.manji.websocket.config.WebsocketConfig;
 import com.manji.websocket.utils.WebsocketUtil;
@@ -43,8 +46,8 @@ public class WebsocketRunner implements InitializingBean, DisposableBean {
             HandshakeData handshakeData = socketIOClient.getHandshakeData();
             String userId = getUserId(handshakeData);
             if (userId != null) {
-                UserDTO userInfo = sysUserMapper.getUserInfo(userId);
-                if (userInfo != null) {
+                Long userCount = sysUserMapper.selectCount(new LambdaQueryWrapper<SysUser>().eq(BaseEntity::getId, userId));
+                if (userCount > 0) {
                     socketIOClient.set(WebsocketConfig.USER_ID, userId);
                     WebsocketUtil.addUser(userId, socketIOClient);
                     log.info("有新链接加入：userId:{} | clinic id: {}", userId, socketIOClient.getSessionId());

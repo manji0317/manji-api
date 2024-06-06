@@ -1,4 +1,4 @@
-package com.manji.base.entity;
+package com.manji.base.condition;
 
 import lombok.Getter;
 import lombok.Setter;

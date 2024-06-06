@@ -17,11 +17,13 @@ import org.apache.ibatis.annotations.Param;
  * @since 2024-04-28
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
-
     /**
-     * 根据查询条件，查询数据库中符合条件的用户信息
+     * 根据查询条件获取用户列表，分页查询
+     *
+     * @param condition 查询条件
+     * @param page      分页信息
+     * @return 用户列表数据
      */
-    UserDTO getUserInfo(@Param("userId") String userId);
-
     Page<SysUser> getUserList(@Param("condition") UserListCondition condition, @Param("page") IPage<SysUser> page);
+
 }

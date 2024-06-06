@@ -1,4 +1,4 @@
-package com.manji.user.entity;
+package com.manji.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.manji.base.basic.entity.BaseEntity;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * <p>
