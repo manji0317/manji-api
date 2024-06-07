@@ -42,7 +42,7 @@ logging:
 file-upload:
   oss:
     # true 开始阿里云oss对象存储 false 开启本地文件上传
-    enable: true
+    enable: false
     # 只有当开启本地文件上传时，此配置才生效
     local-url: http://127.0.0.1:8080/static/
     local-path: D:/home/manji/file/
