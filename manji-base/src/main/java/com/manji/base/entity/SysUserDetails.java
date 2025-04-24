@@ -27,11 +27,11 @@ public class SysUserDetails implements UserDetails , CredentialsContainer  {
     private final boolean credentialsNonExpired;
     private final boolean enabled;
     // 扩展字段
-    private final String userId;
+    private final Integer userId;
     private final String email;
     private final String phone;
-    private final List<String> roles; // 角色列表
-    private final Map<String, List<String>> permissions; // 权限列表
+    private final List<Integer> roles; // 角色列表
+    private final Map<Integer, List<Integer>> permissions; // 权限列表
 
     // 认证成功后擦除密码
     @Override

@@ -1,6 +1,7 @@
 package com.manji.base.error;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,8 +32,13 @@ public class GlobalHandle {
      */
     @ExceptionHandler(value = {BizException.class})
     public ResponseEntity<?> bizExceptionHandler(BizException e) {
-        log.error("业务处理异常: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        String message = e.getMessage();
+        log.error("业务处理异常: {}", message, e);
+        if (StringUtils.isNotBlank(message)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     /**

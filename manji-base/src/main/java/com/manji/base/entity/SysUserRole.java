@@ -1,6 +1,7 @@
 package com.manji.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,11 +33,16 @@ public class SysUserRole extends Model<SysUserRole> {
     /**
      * 用户ID
      */
-    private String userId;
+    private Integer userId;
 
     /**
      * 角色ID
      */
-    private String roleId;
+    private Integer roleId;
 
+    /**
+     * 乐观锁
+     */
+    @Version
+    private Integer version;
 }

@@ -45,7 +45,7 @@ public class OSSConfigProperties {
     /**
      * 获取本地文件访问地址
      *
-     * @param localPath 本地文件路径
+     * @param savePath 本地文件路径
      * @return 文件访问地址
      */
     public String getLocalUrl(String savePath) {

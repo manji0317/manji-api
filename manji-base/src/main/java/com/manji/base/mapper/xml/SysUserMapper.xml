@@ -27,8 +27,7 @@
                su.avatar,
                su.background_img,
                su.status,
-               su.create_time,
-               su.create_by
+               su.create_date
         from sys_user su
         <where>
             su.del_flag = 0
@@ -41,9 +40,9 @@
                     )
             </if>
         </where>
+        order by
         <choose>
             <when test="condition.sortBy != null and condition.sortBy.size() > 0">
-                order by
                 <foreach collection="condition.sortBy" item="sortItem" separator=",">
                     <!--将key驼峰转为下划线-->
                     <bind name="key" value="sortItem.key.replaceAll('([A-Z])', '_$1')"/>
@@ -51,7 +50,7 @@
                 </foreach>
             </when>
             <otherwise>
-                order by su.create_time desc
+                su.create_date desc
             </otherwise>
         </choose>
     </select>

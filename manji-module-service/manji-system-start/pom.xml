@@ -36,6 +36,12 @@
 			<artifactId>manji-file</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.manji</groupId>
+			<artifactId>manji-bar</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class UserDTO {
-    private String id;
+    private Integer id;
     private String username;
     private String password;
     private String nickname;
@@ -22,7 +22,7 @@ public class UserDTO {
     private String avatar;
     private String backgroundImg;
     private Integer status;
-    private List<String> roles;
-    private Map<String, List<String>> permissions;
+    private List<Integer> roles;
+    private Map<Integer, List<Integer>> permissions;
 }
 

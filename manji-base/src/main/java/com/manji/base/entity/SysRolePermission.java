@@ -1,6 +1,7 @@
 package com.manji.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -30,16 +31,21 @@ public class SysRolePermission extends Model<SysRolePermission> {
     /**
      * 角色ID
      */
-    private String roleId;
+    private Integer roleId;
 
     /**
      * 菜单ID或者操作权限标识
      */
-    private String menuId;
+    private Integer menuId;
 
     /**
      * 操作标识ID
      */
-    private String permissionId;
+    private Integer permissionId;
 
+    /**
+     * 乐观锁
+     */
+    @Version
+    private Integer version;
 }

@@ -62,7 +62,7 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
             // 查询角色、权限数据
             UserDTO userInfo = this.getUserInfo(user.getId());
             // 2. 设置权限集合
-            List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(userInfo.getRoles());
+            List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(String.valueOf(userInfo.getRoles()));
             // 3. 返回UserDetails类型用户
             return SysUserDetails.builder()
                     .password(user.getPassword())
@@ -118,7 +118,7 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param userId 用户ID
      * @return 用户信息
      */
-    public UserDTO getUserInfo(String userId) {
+    public UserDTO getUserInfo(Integer userId) {
         log.info("根据userId查询用户信息：userId：{}", userId);
         SysUser sysUser = this.baseMapper.selectById(userId);
 
@@ -141,14 +141,14 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
                             .eq(SysUserRole::getUserId, userId)
                             .select(SysUserRole::getRoleId));
                     if (!sysUserRoles.isEmpty()) {
-                        List<String> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+                        List<Integer> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
                         userInfo.setRoles(roleIds);
 
                         // 查询菜单、权限信息
                         List<SysRolePermission> sysRolePermissions = sysRolePermissionMapper.selectList(new LambdaQueryWrapper<SysRolePermission>()
                                 .in(SysRolePermission::getRoleId, roleIds));
                         if (!sysRolePermissions.isEmpty()) {
-                            Map<String, List<String>> permissions = sysRolePermissions.stream()
+                            Map<Integer, List<Integer>> permissions = sysRolePermissions.stream()
                                     .collect(Collectors.groupingBy(SysRolePermission::getMenuId,
                                             Collectors.mapping(SysRolePermission::getPermissionId, Collectors.toList())));
                             userInfo.setPermissions(permissions);
@@ -177,7 +177,7 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param userId 用户ID
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteUserById(String userId) {
+    public ResponseEntity<?> deleteUserById(Integer userId) {
         log.info("根据ID删除用户开始，用户ID：{}", userId);
         this.baseMapper.deleteById(userId);
         log.info("用户删除成功，开始清理用户与角色关联关系");
@@ -192,7 +192,7 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param userDTO 用户信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> updateUserById(String userId, UserDTO userDTO) {
+    public ResponseEntity<?> updateUserById(Integer userId, UserDTO userDTO) {
         log.info("根据用户ID更新用户信息开始，用户ID：{}", userId);
 
         LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
@@ -225,13 +225,13 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param userId  用户ID
      * @param roleIds 角色ID列表
      */
-    private void updateUserRole(String userId, List<String> roleIds) {
-        if (roleIds.isEmpty()) {
+    private void updateUserRole(Integer userId, List<Integer> roleIds) {
+        if (roleIds == null || roleIds.isEmpty()) {
             log.info("用户未选择角色数据跳过处理");
             return;
         }
         List<SysUserRole> sysUserRoles = roleIds.stream()
-                .map(roleId -> new SysUserRole(userId, roleId))
+                .map(roleId -> new SysUserRole(userId, roleId, 1))
                 .toList();
         sysUserRoleService.saveBatch(sysUserRoles);
     }
@@ -243,7 +243,7 @@ public class UserDetailServiceImpl extends ServiceImpl<SysUserMapper, SysUser> i
      * @param passwordDTO 密码实体类
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> updatePassword(String userId, PasswordDTO passwordDTO) {
+    public ResponseEntity<?> updatePassword(Integer userId, PasswordDTO passwordDTO) {
         log.info("修改用户密码开始，UserId: {}", userId);
 
         Optional<SysUser> sysUserOptional = Optional.ofNullable(this.baseMapper.selectById(userId));

@@ -17,6 +17,7 @@
         <module>manji-user</module>
         <module>manji-websocket</module>
         <module>manji-file</module>
+        <module>manji-bar</module>
     </modules>
 
 </project>

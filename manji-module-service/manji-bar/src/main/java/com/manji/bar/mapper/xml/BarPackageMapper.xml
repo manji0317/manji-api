@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manji.bar.mapper.BarPackageMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.manji.bar.entity.BarPackage">
+        <result column="id" property="id"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="package_name" property="packageName"/>
+        <result column="package_image_url" property="packageImageUrl"/>
+        <result column="package_description" property="packageDescription"/>
+        <result column="package_price" property="packagePrice"/>
+        <result column="status" property="status"/>
+        <result column="version" property="version"/>
+
+        <!-- 嵌套集合：套餐关联的产品列表 -->
+        <collection property="packageProducts" ofType="com.manji.bar.entity.BarPackageProduct"
+                    resultMap="PackageProductResult"/>
+    </resultMap>
+
+    <!-- 套餐关联产品的映射 -->
+    <resultMap id="PackageProductResult" type="com.manji.bar.entity.BarPackageProduct">
+        <id column="bpp_id" property="id"/>
+        <result column="bpp_product_id" property="productId"/>
+        <result column="bpp_package_id" property="packageId"/>
+        <result column="bpp_quantity" property="quantity"/>
+        <result column="bpp_create_date" property="createDate"/>
+        <result column="bpp_update_date" property="updateDate"/>
+        <result column="bpp_del_flag" property="delFlag"/>
+        <result column="bpp_version" property="version"/>
+
+        <!-- 关联产品信息 -->
+        <association property="product" javaType="com.manji.bar.entity.BarProduct">
+            <id column="bpr_id" property="id"/>
+            <result column="bpr_name" property="name"/>
+            <result column="bpr_description" property="description"/>
+            <result column="bpr_category_id" property="categoryId"/>
+            <result column="bpr_image_url" property="imageUrl"/>
+            <result column="bpr_has_sku" property="hasSku"/>
+            <result column="bpr_base_price" property="basePrice"/>
+            <result column="bpr_base_stock" property="baseStock"/>
+            <result column="bpr_status" property="status"/>
+            <result column="bpr_create_date" property="createDate"/>
+            <result column="bpr_update_date" property="updateDate"/>
+            <result column="bpr_del_flag" property="delFlag"/>
+            <result column="bpr_version" property="version"/>
+
+            <!-- 关联规格分类集合 -->
+            <collection property="skuCategories" ofType="com.manji.bar.entity.BarSkuCategory"
+                        resultMap="com.manji.bar.mapper.BarProductMapper.ProductSkuResultMap">
+            </collection>
+        </association>
+    </resultMap>
+
+    <!-- 套餐列表查询 -->
+    <select id="queryPackageList" resultMap="BaseResultMap">
+        SELECT
+        <!--套餐主表数据-->
+        bp.id,
+        bp.package_name,
+        bp.package_description,
+        bp.package_price,
+        bp.package_image_url,
+        bp.status,
+        bp.create_date,
+        bp.update_date,
+        bp.del_flag,
+        bp.version,
+
+        <!--套餐产品关联信息-->
+        bpp.id          as bpp_id,
+        bpp.product_id  as bpp_product_id,
+        bpp.package_id  as bpp_package_id,
+        bpp.quantity    as bpp_quantity,
+        bpp.create_date as bpp_create_date,
+        bpp.update_date as bpp_update_date,
+        bpp.del_flag    as bpp_del_flag,
+        bpp.version     as bpp_version,
+
+        <!--套餐产品信息-->
+        bpr.id          as bpr_id,
+        bpr.name        as bpr_name,
+        bpr.description as bpr_description,
+        bpr.category_id as bpr_category_id,
+        bpr.image_url   as bpr_image_url,
+        bpr.has_sku     as bpr_has_sku,
+        bpr.base_price  as bpr_base_price,
+        bpr.base_stock  as bpr_base_stock,
+        bpr.status      as bpr_status,
+        bpr.create_date as bpr_create_date,
+        bpr.update_date as bpr_update_date,
+        bpr.del_flag    as bpr_del_flag,
+        bpr.version     as bpr_version,
+
+        <!--套餐产品规格属性-->
+        bsc.id            as bsc_id,
+        bsc.product_id    as bsc_product_id,
+        bsc.category_name as bsc_category_name,
+        bsc.create_date   as bsc_create_date,
+        bsc.update_date   as bsc_update_date,
+        bsc.del_flag      as bsc_del_flag,
+        bsc.version       as bsc_version,
+
+        <!--套餐产品 全部 规格-->
+        bs.id              as bs_id,
+        bs.category_id     as bs_category_id,
+        bs.sku_name        as bs_sku_name,
+        bs.sku_description as bs_sku_description,
+        bs.sku_store       as bs_sku_store,
+        bs.sku_price       as bs_sku_price,
+        bs.create_date     as bs_create_date,
+        bs.update_date     as bs_update_date,
+        bs.del_flag        as bs_del_flag,
+        bs.version         as bs_version,
+
+        <!--套餐产品 与套餐绑定 规格-->
+        pck_bs.id              as pck_bs_id,
+        pck_bs.category_id     as pck_bs_category_id,
+        pck_bs.sku_name        as pck_bs_sku_name,
+        pck_bs.sku_description as pck_bs_sku_description,
+        pck_bs.sku_store       as pck_bs_sku_store,
+        pck_bs.sku_price       as pck_bs_sku_price,
+        pck_bs.create_date     as pck_bs_create_date,
+        pck_bs.update_date     as pck_bs_update_date,
+        pck_bs.del_flag        as pck_bs_del_flag,
+        pck_bs.version         as pck_bs_version
+
+        FROM bar.bar_package bp
+                 INNER JOIN bar.bar_package_product bpp ON bp.id = bpp.package_id AND bpp.del_flag = '0'
+                 INNER JOIN bar.bar_product bpr ON bpr.id = bpp.product_id AND bpr.del_flag = '0'
+                 LEFT JOIN bar.bar_package_sku_bind bpsb ON bp.id = bpsb.package_id AND bpp.product_id = bpsb.product_id
+                 LEFT JOIN bar.bar_sku_category bsc ON bsc.id = bpsb.sku_category_id AND bsc.product_id = bpr.id AND bsc.del_flag = '0'
+                 LEFT JOIN bar.bar_sku pck_bs ON pck_bs.id = bpsb.sku_id and pck_bs.category_id = bsc.id AND pck_bs.del_flag = '0'
+                 LEFT JOIN bar.bar_sku bs ON bs.category_id = bsc.id AND bs.del_flag = '0'
+        <where>
+            bp.del_flag = '0'
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(condition.packageName)">
+                AND bp.package_name LIKE CONCAT('%', #{condition.packageName}, '%')
+            </if>
+            <if test="condition.status != null and condition.status != -1">
+                AND bp.status = #{condition.status}
+            </if>
+            <if test="condition.packageId != null">
+                AND bp.id = #{condition.packageId}
+            </if>
+        </where>
+        ORDER BY bp.id, bpp.id, bsc.id, bs.id
+    </select>
+</mapper>

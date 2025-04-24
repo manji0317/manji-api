@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.5</version>
+		<version>3.4.4</version>
 		<relativePath/>
 	</parent>
 
@@ -27,7 +27,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<lombok.version>1.18.30</lombok.version>
 		<mybatis-plus.version>3.5.6</mybatis-plus.version>
-		<mysql.version>8.3.0</mysql.version>
+		<mysql.version>9.2.0</mysql.version>
 		<velocity.version>2.3</velocity.version>
 		<jwt.version>4.4.0</jwt.version>
 	</properties>
@@ -78,7 +78,6 @@
 				<artifactId>java-jwt</artifactId>
 				<version>${jwt.version}</version>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 

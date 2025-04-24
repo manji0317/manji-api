@@ -40,7 +40,7 @@ public class RoleController {
      * 根据ID获取角色信息
      */
     @GetMapping("/role/{roleId}")
-    public ResponseEntity<?> getRoleById(@PathVariable("roleId") String roleId) {
+    public ResponseEntity<?> getRoleById(@PathVariable("roleId") Integer roleId) {
         RoleDTO roleDTO = service.getRoleById(roleId);
         if (roleDTO == null) {
             return ResponseEntity.badRequest().build();
@@ -60,7 +60,7 @@ public class RoleController {
      * 修改角色信息
      */
     @PatchMapping("/role/{roleId}")
-    public ResponseEntity<?> updateRole(@PathVariable("roleId") String roleId, @RequestBody RoleDTO roleDTO) {
+    public ResponseEntity<?> updateRole(@PathVariable("roleId") Integer roleId, @RequestBody RoleDTO roleDTO) {
         return service.updateRole(roleId, roleDTO);
     }
 

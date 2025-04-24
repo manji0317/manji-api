@@ -47,7 +47,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
     public ResponseEntity<?> getRolePageList(BaseCondition condition) {
         Page<SysRole> page = new Page<>(condition.getPage(), condition.getItemPrePage());
         Page<SysRole> sysRolePage = this.baseMapper.selectPage(page, new LambdaQueryWrapper<SysRole>()
-                .orderByDesc(BaseEntity::getCreateTime));
+                .orderByDesc(BaseEntity::getCreateDate));
         return ResponseEntity.ok(sysRolePage);
     }
 
@@ -72,7 +72,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
                 .build();
         this.baseMapper.insert(role);
         log.info("角色信息存储完成，开始处理菜单数据");
-        Map<String, List<String>> permissions = roleDTO.getPermissions();
+        Map<Integer, List<Integer>> permissions = roleDTO.getPermissions();
         this.saveOrUpdateMenus(permissions, role.getId());
         return ResponseEntity.ok().build();
     }
@@ -83,7 +83,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
      * @param roleId      角色ID
      * @param permissions 菜单、权限集合
      */
-    private void saveOrUpdateMenus(Map<String, List<String>> permissions, String roleId) {
+    private void saveOrUpdateMenus(Map<Integer, List<Integer>> permissions, Integer roleId) {
         if (permissions.isEmpty()) {
             log.info("角色没有配置菜单和权限信息，跳过处理");
             return;
@@ -113,7 +113,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
      * @param roleDTO 要修改的信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<?> updateRole(String roleId, RoleDTO roleDTO) {
+    public ResponseEntity<?> updateRole(Integer roleId, RoleDTO roleDTO) {
         log.info("修改角色信息开始，ID:{}", roleId);
         this.baseMapper.update(SysRole.builder()
                         .roleName(roleDTO.getRoleName())
@@ -157,12 +157,12 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
      *
      * @param roleId 角色ID
      */
-    public RoleDTO getRoleById(String roleId) {
+    public RoleDTO getRoleById(Integer roleId) {
         log.info("根据角色ID获取角色信息, ID:{}", roleId);
         SysRole sysRole = this.baseMapper.selectById(roleId);
         Optional<SysRole> optionalSysRole = Optional.ofNullable(sysRole);
         return optionalSysRole.map(role -> {
-            Map<String, List<String>> permissions = sysRolePermissionService.getBaseMapper()
+            Map<Integer, List<Integer>> permissions = sysRolePermissionService.getBaseMapper()
                     .selectList(new LambdaQueryWrapper<SysRolePermission>()
                             .eq(SysRolePermission::getRoleId, roleId)
                             .select(SysRolePermission::getMenuId, SysRolePermission::getPermissionId))

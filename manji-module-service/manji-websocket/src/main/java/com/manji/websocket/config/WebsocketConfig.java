@@ -8,7 +8,7 @@ package com.manji.websocket.config;
  */
 public class WebsocketConfig {
     public static final String USER_ID = "userId";
-    public static final String CONTEXT = "/manji";
+    public static final String CONTEXT = "/bar";
     public static final Integer PROP = 9998;
     public static final Integer BOSS_THREADS = 2;
     public static final Integer WORKER_THREADS = 2;

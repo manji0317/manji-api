@@ -12,8 +12,8 @@ import java.util.Map;
 @Getter
 @Setter
 public class RoleDTO {
-    private String id;
+    private Integer id;
     private String roleName;
     private String description;
-    private Map<String, List<String>> permissions;
+    private Map<Integer, List<Integer>> permissions;
 }

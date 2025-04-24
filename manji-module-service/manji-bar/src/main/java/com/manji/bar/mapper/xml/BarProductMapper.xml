@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manji.bar.mapper.BarProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.manji.bar.entity.BarProduct">
+        <result column="id" property="id" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+        <result column="del_flag" property="delFlag" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="category_id" property="categoryId" />
+        <result column="image_url" property="imageUrl" />
+        <result column="has_sku" property="hasSku" />
+        <result column="base_price" property="basePrice" />
+        <result column="base_stock" property="baseStock" />
+        <result column="status" property="status" />
+    </resultMap>
+    
+    <!-- 包含一对多关系的查询映射结果 -->
+    <resultMap id="ProductWithSkuResultMap" type="com.manji.bar.entity.BarProduct" extends="BaseResultMap">
+        <collection property="skuCategories" resultMap="ProductSkuResultMap"/>
+    </resultMap>
+
+    <resultMap id="ProductSkuResultMap" type="com.manji.bar.entity.BarSkuCategory">
+        <id column="bsc_id" property="id" />
+        <result column="bsc_product_id" property="productId" />
+        <result column="bsc_category_name" property="categoryName" />
+        <result column="bsc_create_date" property="createDate" />
+        <result column="bsc_update_date" property="updateDate" />
+        <result column="bsc_del_flag" property="delFlag" />
+        <result column="bsc_version" property="version" />
+
+        <association property="packageBindSku" javaType="com.manji.bar.entity.BarSku">
+            <id column="pck_bs_id" property="id" />
+            <result column="pck_bs_category_id" property="categoryId" />
+            <result column="pck_bs_sku_name" property="skuName" />
+            <result column="pck_bs_sku_description" property="skuDescription" />
+            <result column="pck_bs_sku_store" property="skuStore" />
+            <result column="pck_bs_sku_price" property="skuPrice" />
+            <result column="pck_bs_create_date" property="createDate" />
+            <result column="pck_bs_update_date" property="updateDate" />
+            <result column="pck_bs_del_flag" property="delFlag" />
+            <result column="pck_bs_version" property="version" />
+        </association>
+        
+        <collection property="skuList" ofType="com.manji.bar.entity.BarSku">
+            <id column="bs_id" property="id" />
+            <result column="bs_category_id" property="categoryId" />
+            <result column="bs_sku_name" property="skuName" />
+            <result column="bs_sku_description" property="skuDescription" />
+            <result column="bs_sku_store" property="skuStore" />
+            <result column="bs_sku_price" property="skuPrice" />
+            <result column="bs_create_date" property="createDate" />
+            <result column="bs_update_date" property="updateDate" />
+            <result column="bs_del_flag" property="delFlag" />
+            <result column="bs_version" property="version" />
+        </collection>
+    </resultMap>
+
+    <!-- 查询商品列表信息 -->
+    <select id="selectProductListWithSku" resultMap="ProductWithSkuResultMap">
+        select bp.*,
+
+               bsc.id             as bsc_id,
+               bsc.product_id     as bsc_product_id,
+               bsc.category_name  as bsc_category_name,
+               bsc.create_date    as bsc_create_date,
+               bsc.update_date    as bsc_update_date,
+               bsc.del_flag       as bsc_del_flag,
+               bsc.version        as bsc_version,
+
+               bs.id              as bs_id,
+               bs.category_id     as bs_category_id,
+               bs.sku_name        as bs_sku_name,
+               bs.sku_description as bs_sku_description,
+               bs.sku_store       as bs_sku_store,
+               bs.sku_price       as bs_sku_price,
+               bs.create_date     as bs_create_date,
+               bs.update_date     as bs_update_date,
+               bs.del_flag        as bs_del_flag,
+               bs.version         as bs_version
+        from bar.bar_product bp
+                 left join bar.bar_sku_category bsc on bp.id = bsc.product_id and bsc.del_flag = '0'
+                 left join bar.bar_sku bs on bs.category_id = bsc.id and bs.del_flag = '0'
+        <where>
+            bp.del_flag = '0'
+            <if test="condition.productId != null">
+                and bp.id = #{condition.productId}
+            </if>
+
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(condition.productName)">
+                and bp.name like CONCAT('%', #{condition.productName}, '%')
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(condition.search)">
+                and (bp.name like CONCAT('%', #{condition.search}, '%') or
+                     bp.description like CONCAT('%', #{condition.search}, '%'))
+            </if>
+
+            <if test="condition.categoryId != null">
+                and bp.category_id = #{condition.categoryId}
+            </if>
+
+            <if test="condition.status != null and condition.status != -1">
+                and bp.status = #{condition.status}
+            </if>
+            order by bp.id, bsc.id, bs.id
+        </where>
+    </select>
+
+    <!-- 根据商品ID查询商品规格 -->
+    <select id="selectProductSku" resultMap="ProductSkuResultMap">
+        select bsc.id             as bsc_id,
+               bsc.product_id     as bsc_product_id,
+               bsc.category_name  as bsc_category_name,
+               bsc.create_date    as bsc_create_date,
+               bsc.update_date    as bsc_update_date,
+               bsc.del_flag       as bsc_del_flag,
+               bsc.version        as bsc_version,
+
+               bs.id              as bs_id,
+               bs.category_id     as bs_category_id,
+               bs.sku_name        as bs_sku_name,
+               bs.sku_description as bs_sku_description,
+               bs.sku_store       as bs_sku_store,
+               bs.sku_price       as bs_sku_price,
+               bs.create_date     as bs_create_date,
+               bs.update_date     as bs_update_date,
+               bs.del_flag        as bs_del_flag,
+               bs.version         as bs_version
+        from bar.bar_sku_category bsc
+                 inner join bar.bar_sku bs on bs.category_id = bsc.id and bs.del_flag = '0'
+        where bsc.del_flag = '0'
+          and bsc.product_id = #{productId}
+    </select>
+</mapper>

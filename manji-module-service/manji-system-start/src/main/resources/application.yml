@@ -3,9 +3,9 @@ spring:
     name: Manji-Boot-Start
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/manji?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/bar?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
+    password: Diannaono.1
   # 文件上传限制
   servlet:
     multipart:
@@ -30,13 +30,13 @@ security:
 mybatis-plus:
   mapper-locations:
     - classpath*:com/manji/base/**/xml/*Mapper.xml
-    - classpath*:com/manji/user/**/xml/*Mapper.xml
+    - classpath*:com/manji/bar/**/xml/*Mapper.xml
 
 # 输出日志配置
 logging:
   level:
     com.manji.base.mapper: debug
-    com.manji.user.mapper: debug
+    com.manji.bar.mapper: debug
 
 # 文件上传篇日志（自定义配置）
 file-upload:

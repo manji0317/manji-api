@@ -32,10 +32,10 @@ public class UserController {
     /**
      * 获取用户信息数据
      *
-     * @param username 用户ID
+     * @param userId 用户ID
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserInfo(@PathVariable("userId") String userId) {
+    public ResponseEntity<?> getUserInfo(@PathVariable("userId") Integer userId) {
         UserDTO userInfo = service.getUserInfo(userId);
         if (userInfo == null) {
             return ResponseEntity.badRequest().build();
@@ -55,7 +55,7 @@ public class UserController {
      * 根据ID删除用户
      */
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUserById(@PathVariable("userId") String userId) {
+    public ResponseEntity<?> deleteUserById(@PathVariable("userId") Integer userId) {
         return service.deleteUserById(userId);
     }
 
@@ -63,15 +63,15 @@ public class UserController {
      * 根据用户ID更新用户数据
      */
     @PatchMapping("/{userId}")
-    public ResponseEntity<?> updateUserById(@PathVariable("userId") String userId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUserById(@PathVariable("userId") Integer userId, @RequestBody UserDTO userDTO) {
         return service.updateUserById(userId, userDTO);
     }
 
     /**
-     * 根据用户ID更新用户数据
+     * 根据用户ID更新用户 密码
      */
     @PatchMapping("/updatePassword/{userId}")
-    public ResponseEntity<?> updatePassword(@PathVariable("userId") String userId, @RequestBody PasswordDTO passwordDTO) {
+    public ResponseEntity<?> updatePassword(@PathVariable("userId") Integer userId, @RequestBody PasswordDTO passwordDTO) {
         return service.updatePassword(userId, passwordDTO);
     }
 
